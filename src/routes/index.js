@@ -6,6 +6,7 @@ router.use("*", (req, res, next) => {
 });
 
 router.use("/user", require("./user"));
+router.use("/notification", require("./notification"));
 
 router.use("*", (req, res) => {
     return res.status(404).json({

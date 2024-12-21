@@ -7,7 +7,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const router = require("./routes");
-const { AuthMiddleware } = require("./utils/auth");
+const kafkaConsumerInit = require("./utils/consumer");
+// const { AuthMiddleware } = require("./utils/auth");
 
 // mongoose.set("debug", true);
 const app = express();
@@ -32,7 +33,7 @@ app.use(function (_req, res, next) {
 });
 
 if (app.settings.env === "development") {
-    app.use("/v1", AuthMiddleware, router);
+    app.use("/v1", router);
 }
 
 mongoose
@@ -48,3 +49,36 @@ mongoose
     .catch((err) => {
         console.error(err);
     });
+
+const { kafka } = require("./utils/client");
+const group = "consumer-1";
+
+const consumer = kafka.consumer({ groupId: group });
+consumer.connect();
+console.log("consumer running");
+
+kafkaConsumerInit.addSubscriber(consumer, ["order"]);
+
+const kfk = consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+        console.log("CONSUMER RUNNING");
+        const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
+        console.log(`- ${prefix} ${message.key}#${message.value}`);
+    },
+});
+
+// const run = async () => {
+//     await consumer.connect();
+//     await consumer.subscribe({ topic: ["order"], fromBeginning: true });
+//     await consumer.run({
+//         eachMessage: async ({ topic, partition, message }) => {
+//             console.log("CONSUMER RUNNING");
+//             const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
+//             console.log(`- ${prefix} ${message.key}#${message.value}`);
+//         },
+//     });
+// };
+
+// run().catch((e) => console.error(`[example/consumer] ${e.message}`, e));
+
+// kfk().catch((e) => console.error(`[example/consumer] ${e.message}`, e));
