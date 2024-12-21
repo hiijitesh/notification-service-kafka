@@ -1,3 +1,4 @@
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
@@ -6,7 +7,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // true for port 465, false for other ports
     auth: {
         user: "jiteshece@gmail.com",
-        pass: "jn7jnAPss4f63QBp6D",
+        pass: process.env.GOOGLE_MAIL_PASS,
     },
 });
 
