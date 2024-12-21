@@ -50,35 +50,72 @@ mongoose
         console.error(err);
     });
 
+// KAFKA Consumer Setup
 const { kafka } = require("./utils/client");
 const group = "consumer-1";
-
 const consumer = kafka.consumer({ groupId: group });
 consumer.connect();
-console.log("consumer running");
 
-kafkaConsumerInit.addSubscriber(consumer, ["order"]);
+async function subscribeAndListen(topics) {
+    try {
+        // await consumer.connect();
+        console.log("GOT THE TOPICs", topics);
+        // Subscribe to each topic dynamically
+        for (const topic of topics) {
+            await consumer.subscribe({ topic, fromBeginning: true });
+            console.log("=====================================");
+            console.log(`Consumer Subscribed to topic: [${topic}]`);
+            console.log("=====================================\n");
+        }
+    } catch (error) {
+        console.error("Error in Kafka Consumer:", error);
+    }
+}
 
-const kfk = consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-        console.log("CONSUMER RUNNING");
-        const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
-        console.log(`- ${prefix} ${message.key}#${message.value}`);
-    },
-});
+const handleMessage = async ({ topic, partition, message }) => {
+    console.log("=====================================");
+    console.log(
+        `Received message from 'TOPIC:${topic}': MESSAGE: ${message.value.toString()}`
+    );
+    console.log("=====================================");
 
-// const run = async () => {
-//     await consumer.connect();
-//     await consumer.subscribe({ topic: ["order"], fromBeginning: true });
-//     await consumer.run({
-//         eachMessage: async ({ topic, partition, message }) => {
-//             console.log("CONSUMER RUNNING");
-//             const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`;
-//             console.log(`- ${prefix} ${message.key}#${message.value}`);
-//         },
-//     });
-// };
+    if (topic === "order") {
+        // Handle order notification
+        console.log("=====================================");
+        console.log(
+            "Handling order notification:",
+            partition,
+            message.value.toString()
+        );
+        console.log("=====================================");
+    }
 
-// run().catch((e) => console.error(`[example/consumer] ${e.message}`, e));
+    // await consumer.commitOffsets([
+    //     { topic, partition, offset: message.offset },
+    // ]);
+};
 
-// kfk().catch((e) => console.error(`[example/consumer] ${e.message}`, e));
+const runConsumer = async (topics) => {
+    // await consumer.connect();
+    // await consumer.subscribe({ topic: "order" });
+
+    await subscribeAndListen(topics);
+    // console.log("=====================================");
+    // console.log("Consumer subscribed to topics: order");
+    // console.log("=====================================\n");
+
+    await consumer.run({
+        eachMessage: handleMessage,
+    });
+};
+
+const topics = ["order"];
+runConsumer(topics)
+    .then(() => {
+        console.log("===========================================");
+        console.log("Consumer is running ✅✅ Bale Bale ✅✅");
+        console.log("===========================================\n\n");
+    })
+    .catch((error) => {
+        console.error("Failed to run kafka consumer", error);
+    });

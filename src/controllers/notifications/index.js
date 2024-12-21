@@ -23,8 +23,7 @@ const controller = {
             };
 
             const data = await getProducer(notifyObj, topic);
-
-            console.log("PRODUCED, -------------");
+            // console.log("PRODUCED", data);
             if (data) {
                 return successResponse(res, data);
             }

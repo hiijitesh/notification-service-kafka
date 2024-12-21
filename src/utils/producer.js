@@ -9,7 +9,7 @@ const { kafka } = require("./client");
 async function getProducer(notifyObj, topic) {
     const producer = kafka.producer();
 
-    console.log("Connecting Producer");
+    console.log("Connecting Producer...");
     await producer.connect();
     console.log("Producer Connected Successfully");
 
@@ -37,13 +37,15 @@ async function getProducer(notifyObj, topic) {
     // }).on("close", async () => {
     //     await producer.disconnect();
     // });
+
     let data;
-    if (topic === "order") {
+    if (topic === "order" || topic === "sell") {
         const { userId, notifyBody } = notifyObj;
 
         const lastChar = userId.slice(-1).charCodeAt(0);
         const partitionNumber = lastChar % 2; // NumberOfPartition
-        console.log(lastChar);
+        console.log(lastChar, notifyObj);
+
         data = await producer.send({
             topic: topic,
             messages: [
@@ -56,11 +58,15 @@ async function getProducer(notifyObj, topic) {
             ],
         });
 
-        console.log("==== Producer ====");
+        if (data.length > 0) {
+            console.log("==== Produced data ====>>>", data);
+        } else {
+            console.log("==== Couldn't Produced the topic <<<====\n");
+        }
     }
 
     await producer.disconnect();
-    return data;
+    return data || ["Invalid Topic"];
 }
 
 module.exports = getProducer;
