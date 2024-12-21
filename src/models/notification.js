@@ -2,21 +2,22 @@ const mongoose = require("mongoose");
 const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const Schema = mongoose.Schema;
+
 const metadataSchema = new Schema({
     screen: String,
-    entityId: Schema.Types.ObjectId,
+    entityId: String, //Schema.Types.ObjectId
     image: String,
 });
 
 const notificationSchema = new Schema(
     {
-        userId: Schema.Types.ObjectId,
+        userId: String, // Schema.Types.ObjectId
         heading: String,
         message: String,
         type: {
             type: String,
             default: "promotion",
-            enum: ["promotion", "order", "offer"],
+            enum: ["promotion", "orders", "offer"],
         },
         priority: {
             type: String,
@@ -24,13 +25,24 @@ const notificationSchema = new Schema(
             enum: ["immediate", "scheduled", "offer"],
         },
         metadata: {
-            metadataSchema,
+            type: metadataSchema,
         },
-        isSeen: Boolean,
+        isSeen: {
+            type: Boolean,
+            default: false,
+        },
         seenTime: {
             type: Date,
         },
-        isDelivered: Boolean,
+        deliveryType: {
+            type: String,
+            default: "real-time",
+            enum: ["real-time", "scheduled"],
+        },
+        isDelivered: {
+            type: Boolean,
+            default: false,
+        },
         deliveryTime: {
             type: Date,
         },
@@ -43,5 +55,5 @@ const notificationSchema = new Schema(
 notificationSchema.set("versionKey", false);
 notificationSchema.plugin(aggregatePaginate);
 
-const UserModel = mongoose.model(notificationSchema, "notification");
+const UserModel = mongoose.model("notification", notificationSchema);
 module.exports = UserModel;

@@ -6,7 +6,7 @@ async function kafkaConsumerInit() {
     const consumer = kafka.consumer({ groupId: group });
     await consumer.connect();
 
-    addSubscriber(consumer, ["order"]);
+    addSubscriber(consumer, ["orders"]);
 
     getMessages(consumer);
 }

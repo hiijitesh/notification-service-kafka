@@ -34,5 +34,5 @@ const preferenceSchema = new Schema(
 preferenceSchema.set("versionKey", false);
 preferenceSchema.plugin(aggregatePaginate);
 
-const UserModel = mongoose.model(preferenceSchema, "notification");
+const UserModel = mongoose.model("preference", preferenceSchema);
 module.exports = UserModel;

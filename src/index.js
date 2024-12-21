@@ -8,6 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const router = require("./routes");
 const kafkaConsumerInit = require("./utils/consumer");
+const { NotificationModel } = require("./models");
 // const { AuthMiddleware } = require("./utils/auth");
 
 // mongoose.set("debug", true);
@@ -79,7 +80,7 @@ const handleMessage = async ({ topic, partition, message }) => {
     );
     console.log("=====================================");
 
-    if (topic === "order") {
+    if (topic === "orders") {
         // Handle order notification
         console.log("=====================================");
         console.log(
@@ -90,6 +91,11 @@ const handleMessage = async ({ topic, partition, message }) => {
             message.value.toString()
         );
         console.log("=====================================");
+
+        const meta = { ...message.value.metadata };
+        console.log(JSON.parse(message.value));
+        const notif = await NotificationModel.create(JSON.parse(message.value));
+        console.log("Notif data====>", notif);
     }
 
     // await consumer.commitOffsets([
@@ -111,7 +117,7 @@ const runConsumer = async (topics) => {
     });
 };
 
-const topics = ["order"];
+const topics = ["orders"];
 runConsumer(topics)
     .then(() => {
         console.log("===========================================");

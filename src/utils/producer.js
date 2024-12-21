@@ -39,12 +39,12 @@ async function getProducer(notifyObj, topic) {
     // });
 
     let data;
-    if (topic === "order" || topic === "sell") {
+    if (topic === "orders" || topic === "sell") {
         const { userId, notifyBody } = notifyObj;
 
         const lastChar = userId.slice(-1).charCodeAt(0);
         const partitionNumber = lastChar % 2; // NumberOfPartition
-        console.log(lastChar, notifyObj);
+        console.log(lastChar, notifyObj, partitionNumber);
 
         data = await producer.send({
             topic: topic,

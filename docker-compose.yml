@@ -19,7 +19,7 @@ services:
             KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
             KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
-            KAFKA_MIN_INSYNC_REPLICAS: "1"
+            # KAFKA_MIN_INSYNC_REPLICAS: "1"
 
     kafka-ui:
         container_name: kafka-ui
@@ -33,3 +33,4 @@ services:
 # -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.254.238:9092 \
 # -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
 # confluentinc/cp-kafka
+

@@ -29,7 +29,7 @@ async function init() {
             ],
         });
         console.log(
-            `Topic Created Success ${topicName} and partition count ${NumberOfPartition}`
+            `Topic Created Successfully, Topic: ${topicName} and partition count: ${NumberOfPartition}`
         );
         console.log("Disconnecting Admin..");
         await admin.disconnect();

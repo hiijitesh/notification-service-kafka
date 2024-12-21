@@ -18,5 +18,5 @@ const userSchema = new Schema(
 userSchema.set("versionKey", false);
 userSchema.plugin(aggregatePaginate);
 
-const UserModel = mongoose.model("User", userSchema, "users");
+const UserModel = mongoose.model("User", userSchema);
 module.exports = UserModel;
