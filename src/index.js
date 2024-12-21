@@ -75,7 +75,7 @@ async function subscribeAndListen(topics) {
 const handleMessage = async ({ topic, partition, message }) => {
     console.log("=====================================");
     console.log(
-        `Received message from 'TOPIC:${topic}': MESSAGE: ${message.value.toString()}`
+        `Received message from ==>> "TOPIC:${topic}": MESSAGE: ${message.value.toString()}`
     );
     console.log("=====================================");
 
@@ -83,8 +83,10 @@ const handleMessage = async ({ topic, partition, message }) => {
         // Handle order notification
         console.log("=====================================");
         console.log(
-            "Handling order notification:",
+            "Handling order notification:=>",
+            "partition:",
             partition,
+            "message:",
             message.value.toString()
         );
         console.log("=====================================");
