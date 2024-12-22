@@ -6,8 +6,11 @@ const {
     forbiddenResponse,
 } = require("../../utils");
 
-const { validateEmail, validatePassword } = require("../../utils/validator");
-const { generateToken } = require("../../utils/auth");
+const {
+    validateEmail,
+    validatePassword,
+} = require("../../utils/auth/validator");
+const { generateToken } = require("../../utils/auth/auth");
 const { registerUser, getUserById, updateUser } = require("./services");
 
 const userController = {

@@ -13,7 +13,7 @@ const {
 } = require("./service");
 
 const sendEmail = require("../../utils/nodemailer");
-const sendSMS = require("../../utils/sendSMS");
+const sendSMS = require("../../utils/twilioSMS");
 const sendPushNotification = require("../../utils/onesignalPush");
 
 const controller = {

@@ -46,7 +46,14 @@ docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -
 
 ## Create Topic and Partitions via API
 
+`
+localhost:6100/v1/notification/topic
+`
+
 ## Add Notifications via API
+`
+localhost:6100/v1/notification/notify
+`
 
 ## Query data in elastic search via API
 ````

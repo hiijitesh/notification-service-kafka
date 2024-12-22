@@ -16,7 +16,7 @@ const {
 } = require("./utils/helper");
 
 const schedule = require("node-schedule");
-// const { AuthMiddleware } = require("./utils/auth");
+// const { AuthMiddleware } = require("./utils/auth/auth");
 
 // mongoose.set("debug", true);
 const app = express();

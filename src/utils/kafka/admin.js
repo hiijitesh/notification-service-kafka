@@ -1,5 +1,5 @@
 const readline = require("readline");
-const { kafka } = require("./client");
+const { kafka } = require("../client");
 
 const rl = readline.createInterface({
     input: process.stdin,

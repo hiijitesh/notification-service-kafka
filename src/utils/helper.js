@@ -189,7 +189,7 @@ function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);
 }
 
-async function lowPrioritySummary(params) {
+async function lowPrioritySummary() {
     const data = await NotificationModel.find({
         priority: "low",
         isDelivered: false,
@@ -197,8 +197,20 @@ async function lowPrioritySummary(params) {
 
     for (const ele of data) {
         const { type, message, heading } = ele;
+        if (type === "order") {
+            orderCount++;
+        }
+        if (type === "product") {
+            productCount++;
+        }
     }
 
+    const orderSummary = {
+        heading: `Your ${orderCount} has been placed`,
+        message,
+    };
+
+    // }
     // order-4
     // like -3
 
