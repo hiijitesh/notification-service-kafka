@@ -5,7 +5,7 @@ const API_KEY = process.env.ONE_SIGNAL_API_KEYS;
 const APP_ID = process.env.ONE_SIGNAL_APP_ID;
 
 module.exports = {
-    sendPushNotification: async (notification) => {
+    sendPushNotification: async (notifications) => {
         const client = new OneSignal.UserClient({
             APP_ID,
             API_KEY,
