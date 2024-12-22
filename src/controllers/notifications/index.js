@@ -14,6 +14,7 @@ const {
 
 const sendEmail = require("../../utils/nodemailer");
 const sendSMS = require("../../utils/sendSMS");
+const sendPushNotification = require("../../utils/onesignalPush");
 
 const controller = {
     sendNotification: async (req, res) => {
@@ -183,6 +184,7 @@ async function channelNotification(userId, heading, message) {
             }
             if (channel === "push") {
                 console.log("PUSH.....");
+                await sendPushNotification(msg);
             }
         }
     }
