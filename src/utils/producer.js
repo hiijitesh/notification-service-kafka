@@ -39,7 +39,7 @@ async function getProducer(notifyObj, topic) {
     // });
 
     let data;
-    if (topic === "orders" || topic === "sell") {
+    if (topic === "orders" || topic === "error") {
         const { userId, notifyBody } = notifyObj;
 
         const lastChar = userId.slice(-1).charCodeAt(0);

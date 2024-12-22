@@ -1,11 +1,25 @@
 module.exports = {
-    statusCodes: {
-        SUCCESS: 200,
-        CREATED: 201,
-        BAD_REQUEST: 400,
-        UNAUTHORIZED: 401,
-        FORBIDDEN: 403,
-        NOT_FOUND: 404,
-        INTERNAL_SERVER_ERROR: 500,
+    PRIORITY: {
+        LOW: "low",
+        HIGH: "high",
+    },
+
+    NOTIFICATION_TYPE: {
+        PROMOTION: "promotion",
+        OFFERS: "offer",
+        ORDERS: "orders",
+        ERROR: "error",
+        ALERT: "alert",
+    },
+
+    DELIVERY_TYPE: {
+        REAL_TIME: "real-time",
+        SCHEDULED: "scheduled",
+    },
+
+    NOTIFICATION_CHANNELS: {
+        SMS: "sms",
+        EMAIL: "email",
+        PUSH: "push",
     },
 };

@@ -9,6 +9,7 @@ const preferenceSchema = new Schema(
         channels: {
             type: [String],
             enum: ["push", "email", "sms"],
+            default: ["push", "email", "sms"],
         },
         limitPerHour: {
             type: Number,
@@ -16,9 +17,11 @@ const preferenceSchema = new Schema(
         },
         quietHourStart: {
             type: Number, // in minutes
+            default: undefined,
         },
         quietHourEnd: {
             type: Number, // in minutes
+            default: undefined,
         },
         // type: {
         //     type: String,

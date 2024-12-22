@@ -17,12 +17,11 @@ const notificationSchema = new Schema(
         type: {
             type: String,
             default: "promotion",
-            enum: ["promotion", "orders", "offer"],
+            enum: ["promotion", "orders", "offer", "alert"],
         },
         priority: {
             type: String,
-            default: "immediate",
-            enum: ["immediate", "scheduled", "offer"],
+            enum: ["low", "high"],
         },
         metadata: {
             type: metadataSchema,
@@ -45,6 +44,10 @@ const notificationSchema = new Schema(
         },
         deliveryTime: {
             type: Date,
+        },
+        send_time: {
+            type: Date,
+            default: new Date(),
         },
     },
     {

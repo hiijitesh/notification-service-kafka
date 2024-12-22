@@ -1,8 +1,10 @@
 const { Kafka } = require("kafkajs");
+const ip = require("ip");
 
-const IP = process.env.IP;
+const host = ip.address(); // process.env.HOST_IP ||
+console.log(host);
 
 exports.kafka = new Kafka({
     clientId: "notification-service",
-    brokers: ["192.168.254.238:9092"],
+    brokers: [`${host}:9092`],
 });

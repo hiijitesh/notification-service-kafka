@@ -7,8 +7,15 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const router = require("./routes");
-const kafkaConsumerInit = require("./utils/consumer");
+
 const { NotificationModel } = require("./models");
+const {
+    sendNotificationUser,
+    sendNotificationUserBulk,
+    addNotification,
+} = require("./utils/helper");
+
+const schedule = require("node-schedule");
 // const { AuthMiddleware } = require("./utils/auth");
 
 // mongoose.set("debug", true);
@@ -80,22 +87,28 @@ const handleMessage = async ({ topic, partition, message }) => {
     );
     console.log("=====================================");
 
+    const DATA = JSON.parse(message.value);
+
     if (topic === "orders") {
         // Handle order notification
-        console.log("=====================================");
-        console.log(
-            "Handling order notification:=>",
-            "partition:",
-            partition,
-            "message:",
-            message.value.toString()
-        );
-        console.log("=====================================");
+        let notify = false;
+        // if (meta.deliveryType === "real-time") {
+        // }
 
-        const meta = { ...message.value.metadata };
-        console.log(JSON.parse(message.value));
-        const notif = await NotificationModel.create(JSON.parse(message.value));
-        console.log("Notif data====>", notif);
+        if (DATA) {
+            notify = await addNotification(DATA);
+            // sendNotificationUser(notify);
+        }
+    }
+
+    if (topic === "error") {
+        console.log("error ===>> ALERT");
+        // Deduplicate alerts if a similar one has been sent recently (e.g., suppress
+        // identical error notifications sent within the last 1 hour)
+        if (DATA) {
+            notify = await addNotification(DATA);
+            // sendNotificationUser(notify);
+        }
     }
 
     // await consumer.commitOffsets([
@@ -108,22 +121,32 @@ const runConsumer = async (topics) => {
     // await consumer.subscribe({ topic: "order" });
 
     await subscribeAndListen(topics);
-    // console.log("=====================================");
-    // console.log("Consumer subscribed to topics: order");
-    // console.log("=====================================\n");
-
     await consumer.run({
         eachMessage: handleMessage,
     });
 };
 
-const topics = ["orders"];
+const topics = ["orders", "alert"];
 runConsumer(topics)
     .then(() => {
         console.log("===========================================");
-        console.log("Consumer is running ✅✅ Bale Bale ✅✅");
+        console.log("Consumer is running.... ✅✅ === ✅✅");
         console.log("===========================================\n\n");
     })
     .catch((error) => {
         console.error("Failed to run kafka consumer", error);
     });
+
+schedule.scheduleJob("*/3 * * * * *", async function () {
+    const now = new Date(new Date().toUTCString());
+    // console.log("SCHEDULER START===========", now);
+    const getNotify = await NotificationModel.find({
+        deliveryType: "scheduled",
+        deliverTime: { $lte: now },
+        isDelivered: false,
+    });
+
+    // console.log("NOTIF SCHEDULE SEND", getNotif);
+
+    // sendNotificationUserBulk(getNotify);
+});

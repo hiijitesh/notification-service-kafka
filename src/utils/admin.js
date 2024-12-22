@@ -1,4 +1,3 @@
-require("dotenv").config();
 const readline = require("readline");
 const { kafka } = require("./client");
 
