@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const preferenceSchema = new Schema(
     {
-        userId: Schema.Types.ObjectId,
+        userId: String, //Schema.Types.ObjectId,
         channels: {
             type: [String],
             enum: ["push", "email", "sms"],

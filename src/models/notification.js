@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const metadataSchema = new Schema({
     screen: String,
     entityId: String, //Schema.Types.ObjectId
+    entityType: String,
     image: String,
 });
 

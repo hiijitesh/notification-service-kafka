@@ -11,7 +11,8 @@ module.exports = {
     },
     getUserById: async (userId) => {
         try {
-            return await UserModel.findOne({ _id: userId })
+            console.log(userId);
+            return await UserModel.findOne(userId)
                 .select("+password")
                 .lean()
                 .exec();

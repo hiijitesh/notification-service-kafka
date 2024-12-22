@@ -3,69 +3,107 @@ const { NotificationModel, PreferenceModel } = require("../models");
 module.exports = {
     sendNotificationUser: async (notify) => {
         if (notify) {
-            const TRIGGER_NOTIFICATION = false;
+            const TRIGGER_NOTIFICATION = true;
             const NotificationId = notify._id?.toString();
+            const userId = notify.userId?.toString();
+            console.log(
+                "TRIGGER_NOTIFICATION",
+                TRIGGER_NOTIFICATION,
+                "NotificationId==>",
+                NotificationId
+            );
 
             // get user preferences
-            const preference = PreferenceModel.findOne({ userId });
+
+            if (!userId) {
+                console.log("NO User Id ");
+                return;
+            }
+            const preference = await PreferenceModel.findOne({ userId });
+            console.log("preference", preference);
 
             // channels - email sms push
             const channels = preference.channels;
+            // scheduled ---> schedule it
 
-            // DND hrs -
-            const quietHourStart = new Date(preference.quietHourStart);
-            const quietHourEnd = new Date(preference.quietHourEnd);
+            // real-time -->
+            // 1. correct time(not dnd, has limit)
+            // 2. limit exhausted --> schedule it after 1 hr
+            // 3. DND Period --> schedule it after quietHrs
 
-            const now = new Date();
+            if (preference && notify.deliveryType === "real-time") {
+                // 2. limit exhausted-- > schedule it after 1 hr
+                const limitPerHour = preference.limitPerHour;
+                const checkLimit = await NotificationModel.find({
+                    userId,
+                    $and: [
+                        {
+                            deliveryTime: {
+                                $gte: new Date(
+                                    new Date().getTime() - 1000 * 60 * 60
+                                ),
+                            },
+                        },
+                        {
+                            deliveryTime: {
+                                $lte: new Date(),
+                            },
+                        },
+                    ],
+                });
 
-            // If a notification falls within quiet hours, reschedule it for the user’s next active hour
-            if (now < quietHourStart && now > quietHourEnd) {
-                TRIGGER_NOTIFICATION = true;
+                if (checkLimit && checkLimit > limitPerHour) {
+                    // send the notif
+                    await scheduleLimitExhaust(NotificationId);
+                    console.log("LMIT SCHEDULED");
+                    TRIGGER_NOTIFICATION = false;
+                }
 
-                const deliverTime = quietHourEnd.setTime(
-                    quietHourEnd.getTime() + 1000 * 60
-                );
+                // DND hrs -
+                const quietHourStart = preference.quietHourStart; // number
+                const quietHourEnd = preference.quietHourEnd; // number
 
-                const updateNotifyObj = {
-                    deliveryType: "scheduled",
-                    deliverTime,
-                };
+                const now = new Date();
+                const currentMinute = now.getHours() * 60 + now.getMinutes();
 
-                const updateNotify = await NotificationModel.findByIdAndUpdate(
-                    NotificationId,
-                    updateNotifyObj
-                );
-                console.log(
-                    "DND Hour Found so ===>> NOTIF---> Scheduled",
-                    updateNotify
-                );
-            }
+                // pref fetch s, e ---> num,  new Date()--> convert into minute --> .getHour()*60+.getMinutes;
 
-            // Limit Per Hrs
-            //  check recent notifications sent to a user, ensuring the
-            //  count does not exceed the hourly limit.
-            const limitPerHour = preference.limitPerHour;
-            const { startOfHour, endOfHour } = getStartEndHour();
+                // 7am - 10pm //  end > start -->  deliveryTime = end +1-minute
 
-            const checkLimit = NotificationModel.find({
-                userId,
-                createdAt: {
-                    $gte: startOfHour,
-                    $lt: endOfHour,
-                },
-            });
+                // 10pm-3AM // start > end     -->>  currMinute < start
+                // </start > deliveryTime = start + 1 - minute
 
-            if (checkLimit && checkLimit < limitPerHour) {
-                // send the notif
-                TRIGGER_NOTIFICATION = true;
+                if (quietHourStart < quietHourEnd) {
+                    // in a same eg:- 7AM - 10AM
+                    if (
+                        currentMinute > quietHourStart &&
+                        currentMinute < quietHourEnd
+                    ) {
+                        TRIGGER_NOTIFICATION = false;
+                        await scheduleDND(quietHourEnd, NotificationId);
+                        console.log("DND SCHEDULED");
+                    }
+                } else if (quietHourStart > quietHourEnd) {
+                    // both are in different day eg:- 10PM - 3AM
+                    if (
+                        currentMinute < quietHourStart &&
+                        currentMinute > quietHourEnd
+                    ) {
+                        TRIGGER_NOTIFICATION = false;
+                        await scheduleDND(quietHourStart, NotificationId);
+                        console.log("DND SCHEDULED");
+                    }
+                }
+
+                console.log("currentMIn", currentMinute);
             }
 
             // send notif to prefs
         }
     },
 
-    sendNotificationUserBulk: async (getNotif) => {
-        if (getNotif) {
+    sendNotificationUserBulk: async (data) => {
+        if (data) {
             // get user preferences
             // channels - email sms push
             // DND hrs -
@@ -81,6 +119,44 @@ module.exports = {
         return notify;
     },
 };
+
+async function scheduleDND(date, NotificationId) {
+    let start = new Date();
+    start.setUTCHours(0, 0, 0, 0);
+    const deliverTime = addMinutes(start, date + 1);
+
+    const updateNotifyObj = {
+        deliveryType: "scheduled",
+        deliverTime,
+    };
+
+    const updateNotify = await NotificationModel.findByIdAndUpdate(
+        NotificationId,
+        updateNotifyObj,
+        { new: true }
+    );
+    console.log("DND Hour Found so ===>> NOTIF---> Scheduled", updateNotify);
+}
+async function scheduleLimitExhaust(NotificationId) {
+    // scheduled to 1 hr later
+    const updateNotifyObj = {
+        deliveryTime: {
+            $gte: new Date(ISODate().getTime() + 1000 * 60 * 60),
+        },
+    };
+
+    const data = await NotificationModel.findByIdAndUpdate(
+        NotificationId,
+        updateNotifyObj,
+        {
+            new: true,
+        }
+    );
+
+    console.log("LMIT SCHEDULED======>>>>>", data);
+
+    return data;
+}
 
 function getStartEndHour() {
     const now = new Date();
@@ -107,4 +183,24 @@ function getOneHourAgo() {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
     return oneHourAgo;
+}
+
+function addMinutes(date, minutes) {
+    return new Date(date.getTime() + minutes * 60000);
+}
+
+async function lowPrioritySummary(params) {
+    const data = await NotificationModel.find({
+        priority: "low",
+        isDelivered: false,
+    });
+
+    for (const ele of data) {
+        const { type, message, heading } = ele;
+    }
+
+    // order-4
+    // like -3
+
+    // call one signal
 }

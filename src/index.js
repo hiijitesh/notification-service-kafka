@@ -88,6 +88,7 @@ const handleMessage = async ({ topic, partition, message }) => {
     console.log("=====================================");
 
     const DATA = JSON.parse(message.value);
+    console.log("MMmmmmmm", DATA);
 
     if (topic === "orders") {
         // Handle order notification
@@ -97,7 +98,7 @@ const handleMessage = async ({ topic, partition, message }) => {
 
         if (DATA) {
             notify = await addNotification(DATA);
-            // sendNotificationUser(notify);
+            await sendNotificationUser(notify);
         }
     }
 
@@ -140,13 +141,17 @@ runConsumer(topics)
 schedule.scheduleJob("*/3 * * * * *", async function () {
     const now = new Date(new Date().toUTCString());
     // console.log("SCHEDULER START===========", now);
+
     const getNotify = await NotificationModel.find({
         deliveryType: "scheduled",
+        priority: "high",
         deliverTime: { $lte: now },
         isDelivered: false,
     });
 
     // console.log("NOTIF SCHEDULE SEND", getNotif);
 
-    // sendNotificationUserBulk(getNotify);
+    // await sendNotificationUser(getNotify);
+
+    // update isDelivered ;true
 });
