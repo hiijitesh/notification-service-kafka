@@ -3,9 +3,10 @@
 > This file should include a description of your implementation, the design
 > choices you made, and any known issues present at the time of submission.
 
+-   ### [DOCUMENTATION](https://github.com/hiijitesh/notification-service-kafka/blob/main/DOC.md)
 -   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/Scale.md)
 
--   ### [FUTURESCOPE](https://github.com/hiijitesh/notification-service-kafka/blob/main/FutureScope.md)
+-   ### [FUTURE-SCOPE](https://github.com/hiijitesh/notification-service-kafka/blob/main/FUTURE%20SCOPE.md)
 
 # Project setup
 
