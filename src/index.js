@@ -88,7 +88,7 @@ const handleMessage = async ({ topic, partition, message }) => {
     console.log("=====================================");
 
     const DATA = JSON.parse(message.value);
-    console.log("MMmmmmmm", DATA);
+    // console.log("MMmmmmmm", DATA);
 
     if (topic === "orders") {
         // Handle order notification
