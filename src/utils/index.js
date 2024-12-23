@@ -31,3 +31,11 @@ module.exports = {
         });
     },
 };
+
+// let start = new Date();
+// start.setUTCHours(0, 0, 0, 0);
+// const time = addMinutes(start, date + 1);
+
+// function addMinutes(date, minutes) {
+//     return new Date(date.getTime() + minutes * 60000);
+// }

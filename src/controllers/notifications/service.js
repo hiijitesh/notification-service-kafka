@@ -19,9 +19,12 @@ module.exports = {
             return error;
         }
     },
-    updateUserPreference: async (data) => {
+    updateUserPreference: async (userId, data) => {
         try {
-            await PreferenceModel.create(data);
+            return await PreferenceModel.findOneAndUpdate(userId, data, {
+                upsert: true,
+                new: true,
+            });
         } catch (error) {
             console.error(error.message);
             return error;

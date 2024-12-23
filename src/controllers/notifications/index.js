@@ -132,21 +132,30 @@ const controller = {
 
     addUserPreference: async (req, res) => {
         try {
-            // const { userId, quietHourEnd, quietHourEnd } = req.body;
+            const { userId, end, start, limitPerHour, channels } = req.body;
 
-            if (!userId || !quietHourEnd || !quietHourEnd) {
-                return errorResponse(res, {}, "provide userId or Hours");
+            if (!userId) {
+                return errorResponse(res, {}, "provide userId");
+            }
+
+            if (channels && !Array.isArray(channels)) {
+                return errorResponse(
+                    res,
+                    { channels },
+                    "channel should be array of string"
+                );
             }
 
             const prefObj = {
                 userId,
-                quietHourStart: quietHourEnd,
-                quietHourEnd: quietHourEnd,
+                quietHourStart: start,
+                quietHourEnd: end,
+                limitPerHour: parseInt(limitPerHour),
+                channels,
             };
-
-            const ok = console.log("PREF DONE", ok);
-            const pref = await updateUserPreference(prefObj);
-            return successResponse(res, pref, "TOPIC & PARTITIONS Created");
+            console.log(prefObj);
+            const pref = await updateUserPreference(userId, prefObj);
+            return successResponse(res, pref, "preference updated");
         } catch (error) {
             console.error(error);
             return errorResponse(res, {}, "something went wrong!");
@@ -184,7 +193,7 @@ async function channelNotification(userId, heading, message) {
             }
             if (channel === "push") {
                 console.log("PUSH.....");
-                await sendPushNotification(msg);
+                // await sendPushNotification(msg);
             }
         }
     }
