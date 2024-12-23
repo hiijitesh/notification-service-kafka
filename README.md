@@ -3,6 +3,10 @@
 > This file should include a description of your implementation, the design
 > choices you made, and any known issues present at the time of submission.
 
+-   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/Scale.md)
+
+-   ### [FUTURESCOPE](https://github.com/hiijitesh/notification-service-kafka/blob/main/FutureScope.md)
+
 # Project setup
 
 -   Clone repo
@@ -90,28 +94,3 @@ localhost:6100/v1/notification/notify
 ```
 
 ```
-
-# Working Explained
-
-## Notification Service
-
--   user preference is store in mongoDB
--   user can can set preference like DND, Limit per hour or subscribe the channels(sms, email, push) using api `/v1/notification/prefer`
--   server can send the notification based on the priority(high or low), high one get immediately triggered. low one go through kafka broker
--   topic and partitions is added to kafka via `/v1/notification/topic` .
-
--   when notification api `/v1/notification/notify `is called, it checks for the `priority`, `type of notification`, based on these two either they trigger it immediately bypassing producer consumer cycle or it proceed to kafka broker
--   if message triggered between DND time period then it schedule it outside the DND hours
-
-## Kafka and Zookeeper
-
-### Create Topic and Partitions
-
--   api is available for the creating topic and number of partition
--   partition is shared based on the userId (STRING)
-
-### Producer & Consumer
-
--   by calling the /notify API, it trigger the kafka producer in given topic and partitions
--   consumer is listening the topic always, as soon as topic is produced, consumer received it and then store into MongoDB along with calling Notification channel service like sms, email, push
--   consumer listen to given groupId, we can provide different groupId based on topics
