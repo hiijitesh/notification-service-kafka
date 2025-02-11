@@ -4,7 +4,7 @@
 > choices you made, and any known issues present at the time of submission.
 
 -   ### [DOCUMENTATION](https://github.com/hiijitesh/notification-service-kafka/blob/main/DOC.md)
--   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/SCALE.md)
+-   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/Scale.md)
 -   ### [FUTURE-SCOPE](https://github.com/hiijitesh/notification-service-kafka/blob/main/FUTURE%20SCOPE.md)
 
 # Project setup
