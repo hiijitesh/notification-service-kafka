@@ -4,8 +4,7 @@
 > choices you made, and any known issues present at the time of submission.
 
 -   ### [DOCUMENTATION](https://github.com/hiijitesh/notification-service-kafka/blob/main/DOC.md)
--   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/Scale.md)
-
+-   ### [SCALE](https://github.com/hiijitesh/notification-service-kafka/blob/main/SCALE.md)
 -   ### [FUTURE-SCOPE](https://github.com/hiijitesh/notification-service-kafka/blob/main/FUTURE%20SCOPE.md)
 
 # Project setup
@@ -22,7 +21,7 @@ PORT =
 ACCESS_TOKEN =
 REFRESH_TOKEN=
 
-MONGO_URI=
+MONGO_URI="mongodb://root:example@localhost:27017"
 
 HOST_IP =
 GOOGLE_MAIL_PASS =
@@ -34,10 +33,6 @@ TWILIO_AUTH_TOKEN =
 
 ONE_SIGNAL_API_KEYS=
 ONE_SIGNAL_APP_ID =
-
-ELASTIC_USERNAME="your-username"
-ELASTIC_PASSWORD="your-password"
-ELASTIC_CLOUD_ID="your-cloud-id"
 
 ```
 
@@ -99,6 +94,7 @@ localhost:6100/v1/notification/notify
 ### JWT AUTH_TOKEN
 
 ```js
+node;
 require("crypto").randomBytes(48, function (err, buffer) {
     const token = buffer.toString("hex");
     console.log(token);

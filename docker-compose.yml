@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
     zookeeper:
         image: zookeeper
@@ -28,18 +30,20 @@ services:
             - 8080:8080
         environment:
             DYNAMIC_CONFIG_ENABLED: true
+        depends_on:
+            - kafka
 
-    elastic-search:
+    elasticsearch:
         image: elasticsearch:8.17.0
         container_name: elasticsearch
         ports:
             - "9200:9200" # REST API
             - "9300:9300" # Cluster communication
-        expose:
-            - "9300"
         environment:
             - discovery.type=single-node
             - ES_JAVA_OPTS=-Xms1g -Xmx1g
+        volumes:
+            - elasticsearch_data:/usr/share/elasticsearch/data
 
     mongodb:
         image: mongo:latest
@@ -60,8 +64,11 @@ services:
         environment:
             ME_CONFIG_MONGODB_ADMINUSERNAME: root
             ME_CONFIG_MONGODB_ADMINPASSWORD: example
-            ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+            ME_CONFIG_MONGODB_URL: mongodb://root:example@mongodb:27017/
             ME_CONFIG_BASICAUTH: false
+        depends_on:
+            - mongodb
 
 volumes:
     mongodb_data:
+    elasticsearch_data:

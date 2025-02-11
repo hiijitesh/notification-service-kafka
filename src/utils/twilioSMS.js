@@ -8,11 +8,11 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 // const client = new twilio(accountSid, authToken);
 const client = require("twilio")(accountSid, authToken);
 
-async function sendSMS(obj) {
+function sendSMS(obj) {
     const { body, to, from } = obj;
     client.messages
         .create({
-            body: body,
+            body,
             from: "+12183876177",
             to: "+918873585848",
         })
