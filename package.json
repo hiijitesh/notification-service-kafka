@@ -13,8 +13,7 @@
 		"dev": "NODE_ENV=development nodemon src/index.js",
 		"lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
 		"lint-and-fix": "eslint . --ext .js --fix",
-		"format": "prettier --write . --list-different",
-		"prepare": "husky install"
+		"format": "prettier --write . --list-different"
 	},
 	"dependencies": {
 		"@elastic/elasticsearch": "^8.17.0",

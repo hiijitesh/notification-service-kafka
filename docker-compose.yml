@@ -19,25 +19,25 @@ services:
             KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
             KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
-            # KAFKA_MIN_INSYNC_REPLICAS: "1"
+            KAFKA_MIN_INSYNC_REPLICAS: "1"
 
-    elastic-search:
-        image: elasticsearch:8.17.0
-        container_name: elasticsearch
-            - notification-service-kafka-1
-        ports:
-            - "9200:9200" # REST API
-            - "9300:9300" # Cluster communication
-        expose:
-            - "9300"
-        environment:
-            - discovery.type=single-node
-            - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    # elastic-search:
+    #     image: elasticsearch:8.17.0
+    #     container_name: elasticsearch
+    #         - notification-service-kafka-1
+    #     ports:
+    #         - "9200:9200" # REST API
+    #         - "9300:9300" # Cluster communication
+    #     expose:
+    #         - "9300"
+    #     environment:
+    #         - discovery.type=single-node
+    #         - ES_JAVA_OPTS=-Xms1g -Xmx1g
 
-    kafka-ui:
-        container_name: kafka-ui
-        image: provectuslabs/kafka-ui
-        ports:
-            - 8080:8080
-        environment:
-            DYNAMIC_CONFIG_ENABLED: true
+    # kafka-ui:
+    #     container_name: kafka-ui
+    #     image: provectuslabs/kafka-ui
+    #     ports:
+    #         - 8080:8080
+    #     environment:
+    #         DYNAMIC_CONFIG_ENABLED: true

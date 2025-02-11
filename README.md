@@ -95,3 +95,12 @@ localhost:6100/v1/notification/notify
 ```
 
 ```
+
+### JWT AUTH_TOKEN
+
+```js
+require("crypto").randomBytes(48, function (err, buffer) {
+    const token = buffer.toString("hex");
+    console.log(token);
+});
+```
