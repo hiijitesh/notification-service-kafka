@@ -1,4 +1,4 @@
-# Distributed Notification System Doc
+# Distributed Notification System
 
 Efficient communication is a cornerstone of modern applications. The distributed notification system described here ensures timely and reliable delivery of messages across multiple channels such as SMS, email, and push notifications. By leveraging **Kafka** and **Zookeeper**, this system provides scalability, fault tolerance, and configurability to meet diverse user needs.
 
