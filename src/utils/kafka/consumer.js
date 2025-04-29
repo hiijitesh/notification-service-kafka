@@ -16,12 +16,12 @@ kafkaConsumerInit();
 
 async function addSubscriber(consumer, topics) {
     await consumer.subscribe({
-        topics: topics, // ["order"]
+        topics, // ["order"]
         fromBeginning: true,
     });
 }
 
-async function getMessages() {
+function getMessages() {
     const eachMessage = async ({
         topic,
         partition,

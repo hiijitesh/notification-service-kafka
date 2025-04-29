@@ -140,7 +140,7 @@ module.exports = {
 };
 
 async function scheduleDND(date, NotificationId) {
-    let start = new Date();
+    const start = new Date();
     start.setUTCHours(0, 0, 0, 0);
     const deliverTime = addMinutes(start, date + 1);
 
@@ -266,8 +266,8 @@ async function channelNotification(data) {
 
     if (preference) {
         const channels = preference.channels;
-        let msg = {
-            from: '"Jitesh Kumar" <jiteshece@gmail.email>', // sender address
+        const msg = {
+            from: "'Jitesh Kumar' <jiteshece@gmail.email>", // sender address
             to: "jitesbharti@gmail.com", // list of receivers
             // bcc: "abc@gmail.com",
             subject: heading, // Subject line

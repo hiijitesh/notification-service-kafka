@@ -13,8 +13,8 @@ function sendSMS(obj) {
     client.messages
         .create({
             body,
-            from: "+12183876177",
-            to: "+918873585848",
+            from: from ?? "+12183876177",
+            to: to || "+918873585848",
         })
         .then((message) => console.log(message.sid));
 }

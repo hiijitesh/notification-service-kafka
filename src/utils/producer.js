@@ -47,7 +47,7 @@ async function getProducer(notifyObj, topic) {
         console.log(lastChar, notifyObj, partitionNumber);
 
         data = await producer.send({
-            topic: topic,
+            topic,
             messages: [
                 {
                     partition: partitionNumber,

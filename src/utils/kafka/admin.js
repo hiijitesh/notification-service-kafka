@@ -6,7 +6,7 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-async function init() {
+function init() {
     rl.setPrompt("> ");
     rl.prompt();
 
